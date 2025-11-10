@@ -11,7 +11,7 @@ async function bootstrap() {
     // Enable graceful shutdown
     app.enableShutdownHooks();
 
-    const port = process.env.PORT ?? 3000;
+    const port = process.env.PORT ?? 3001;
     await app.listen(port);
 
     logger.log(`🚀 USDT Monitor Backend started successfully on port ${port}`);

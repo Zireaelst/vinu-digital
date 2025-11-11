@@ -1,10 +1,11 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ethers } from 'ethers';
+import { ethers, ContractEventPayload } from 'ethers';
 import {
   FirebaseService,
   NotificationPayload,
 } from '../firebase/firebase.service';
+import { UsdtMonitorService, TransferEvent } from './usdt-monitor.service';
 import { AppConfig } from '../config/configuration';
 
 @Injectable()
@@ -30,6 +31,7 @@ export class BlockchainService implements OnApplicationBootstrap {
   constructor(
     private readonly configService: ConfigService<AppConfig>,
     private readonly firebaseService: FirebaseService,
+    private readonly usdtMonitorService: UsdtMonitorService,
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
@@ -84,11 +86,19 @@ export class BlockchainService implements OnApplicationBootstrap {
     this.logger.log(
       `Monitoring transfers >= ${ethers.formatUnits(this.TRANSFER_THRESHOLD, this.USDT_DECIMALS)} USDT`,
     );
+    this.logger.log(
+      '🔥 USDT Monitoring is ACTIVE - Listening for large transfers...',
+    );
 
-    // Listen for Transfer events
+    // Listen for Transfer events with proper ethers.js v6 syntax
     this.usdtContract.on(
       'Transfer',
-      (from: string, to: string, value: bigint, event) => {
+      (
+        from: string,
+        to: string,
+        value: bigint,
+        event: ContractEventPayload,
+      ) => {
         void this.handleTransferEvent(from, to, value, event).catch((error) => {
           this.logger.error('Error handling transfer event:', error);
         });
@@ -116,7 +126,7 @@ export class BlockchainService implements OnApplicationBootstrap {
     from: string,
     to: string,
     value: bigint,
-    event: any,
+    event: ContractEventPayload,
   ): Promise<void> {
     try {
       // Check if transfer meets threshold
@@ -125,14 +135,28 @@ export class BlockchainService implements OnApplicationBootstrap {
       }
 
       const formattedAmount = ethers.formatUnits(value, this.USDT_DECIMALS);
-      const txHash =
-        typeof event === 'object' && event && 'transactionHash' in event
-          ? String((event as { transactionHash: unknown }).transactionHash)
-          : 'unknown';
+      
+      // Extract transaction hash from ContractEventPayload
+      // In ethers.js v6, transaction hash is in event.log.transactionHash
+      const txHash: string = event.log.transactionHash;
 
       this.logger.log(
         `🚨 Large USDT transfer detected: ${formattedAmount} USDT from ${from} to ${to} (tx: ${txHash})`,
       );
+
+      // Create transfer event object
+      const transferEvent: TransferEvent = {
+        from,
+        to,
+        value,
+        formattedAmount,
+        txHash,
+        blockNumber: event.log.blockNumber,
+        timestamp: new Date(),
+      };
+
+      // Store transfer in UsdtMonitorService
+      await this.usdtMonitorService.processTransfer(transferEvent);
 
       // Prepare notification payload
       const payload: NotificationPayload = {

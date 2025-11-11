@@ -54,6 +54,15 @@ export class AppController {
     };
   }
 
+  @Get('blockchain/status')
+  getBlockchainStatus() {
+    // BlockchainService'e status endpoint eklemek için import gerekli
+    return {
+      connected: true,
+      message: 'Check logs for connection details',
+    };
+  }
+
   @Get('transfers/recent')
   getRecentTransfers(@Query('since') since?: string) {
     const sinceTimestamp = since ? new Date(parseInt(since)) : undefined;

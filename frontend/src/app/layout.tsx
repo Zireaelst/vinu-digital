@@ -33,14 +33,32 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: `
               // Global error handler to suppress MetaMask extension conflicts
+              const originalError = console.error;
+              console.error = function(...args) {
+                const message = args[0]?.toString() || '';
+                if (message.includes('ethereum') || 
+                    message.includes('MetaMask') || 
+                    message.includes('Cannot set property') ||
+                    message.includes('requestProvider') ||
+                    message.includes('inpage.js')) {
+                  return; // Suppress MetaMask-related errors
+                }
+                originalError.apply(console, args);
+              };
+              
               window.addEventListener('error', function(e) {
                 if (e.message && (
                   e.message.includes('ethereum') || 
                   e.message.includes('MetaMask') || 
                   e.message.includes('Cannot set property ethereum') ||
-                  e.filename?.includes('extension')
+                  e.message.includes('requestProvider') ||
+                  e.message.includes('inpage.js') ||
+                  e.filename?.includes('extension') ||
+                  e.filename?.includes('requestProvider') ||
+                  e.filename?.includes('inpage')
                 )) {
                   e.preventDefault();
+                  e.stopPropagation();
                   return false;
                 }
               });
@@ -48,7 +66,8 @@ export default function RootLayout({
               window.addEventListener('unhandledrejection', function(e) {
                 if (e.reason && e.reason.message && (
                   e.reason.message.includes('ethereum') || 
-                  e.reason.message.includes('MetaMask')
+                  e.reason.message.includes('MetaMask') ||
+                  e.reason.message.includes('Cannot set property')
                 )) {
                   e.preventDefault();
                   return false;

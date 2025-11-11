@@ -2,7 +2,29 @@
 
 Ethereum blockchain'deki büyük USDT transferlerini gerçek zamanlı olarak izleyen ve Firebase Cloud Messaging (FCM) ile anında bildirimler gönderen modern, full-stack bir monitoring uygulamasıdır.
 
-## 📸 Uygulama Önizlemesi
+## � İçindekiler
+
+### 🏁 Hızlı Başlangıç
+- [🚀 Kurulum ve Başlangıç](#-kurulum-ve-başlangıç)
+- [📱 Kullanım Kılavuzu](#-kullanım-kılavuzu)
+- [🔧 Konfigürasyon](#-konfigürasyon)
+
+### 🏗️ Teknik Dokümantasyon
+- [🏗️ Teknik Mimari](#️-teknik-mimari)
+- [⚙️ Teknoloji Stack'i](#️-teknoloji-stacki)
+- [📁 Proje Yapısı](#-proje-yapısı)
+- [📊 Monitoring ve Analytics](#-monitoring-ve-analytics)
+
+### 📚 Detaylı Dokümantasyon
+- [🎯 Kapsamlı Özellik Listesi](#-kapsamlı-özellik-listesi)
+- [📡 API Documentation](#-api-documentation)
+- [🛡️ Güvenlik ve Best Practices](#-güvenlik-ve-best-practices)
+- [📦 Production Deployment](#-production-deployment)
+- [⚙️ Development](#️-development)
+
+---
+
+## �📸 Uygulama Önizlemesi
 
 ### � Ana Dashboard
 ![Landing Page](frontend/public/assets/landing.png)
@@ -20,16 +42,11 @@ Ethereum blockchain'deki büyük USDT transferlerini gerçek zamanlı olarak izl
 ![Control Panel](frontend/public/assets/control-panel.png)
 *Bildirim ayarları ve kullanıcı tercihleri*
 
-#### Yardım Alma
-- 📖 **Dokümantasyon**: Bu README ve `/docs` klasörü
-- 🐛 **GitHub Issues**: Bug reports ve feature requests  
-- � **Discussions**: Genel sorular için GitHub Discussions
-
----
-
-**🔥 Canlı İzleme**: Backend başlatıldığında Ethereum blockchain'i gerçek zamanlı olarak izlemeye başlar ve büyük USDT transferlerini anında tespit eder!atistikler
+### 📈 Transfer İstatistikleri
 ![Total Notifications](frontend/public/assets/total-notif.png)
 *Transfer istatistikleri ve toplam bildirim sayısı*
+
+**🔥 Canlı İzleme**: Backend başlatıldığında Ethereum blockchain'i gerçek zamanlı olarak izlemeye başlar ve büyük USDT transferlerini anında tespit eder!
 
 ## ✨ Temel Özellikler
 
@@ -739,16 +756,4 @@ tail -f backend/logs/app.log
 Bu proje MIT lisansı altında lisanslanmıştır.
 
 **⚠️ Disclaimer**: Bu yazılım eğitim ve monitoring amaçları için geliştirilmiştir. Sadece public blockchain verilerini okur ve finansal tavsiye niteliği taşımaz.
-
-## 🆘 Support
-
-#### Community Support
-- 🐛 **GitHub Issues**: Bug reports ve feature requests
-- 💬 **Discussions**: GitHub Discussions için genel sorular
-- 📧 **Email**: support@vinu-digital.com (if available)
-
-#### Professional Support
-- 🏢 **Enterprise Support**: Özel destek paketleri
-- � **Custom Development**: Özelleştirme ve geliştirme hizmetleri
-- 📚 **Training**: Team training ve workshop'lar
 

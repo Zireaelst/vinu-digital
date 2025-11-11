@@ -1,161 +1,284 @@
-# 🚀 USDT Transfer Monitor Backend
+# 🚀 USDT Transfer Monitor - Backend
 
-A NestJS-based backend service that monitors large USDT transfers on Ethereum mainnet and sends real-time notifications via Firebase Cloud Messaging (FCM).
+Ethereum blockchain'deki büyük USDT transferlerini gerçek zamanlı olarak izleyen ve Firebase Cloud Messaging (FCM) ile anında bildirimler gönderen NestJS tabanlı backend servisidir.
 
-## 🎯 Features
+## ✨ Özellikler
 
-- **Real-time USDT Transfer Monitoring**: Watches for USDT transfers ≥ 100,000 USDT on Ethereum mainnet
-- **Firebase Push Notifications**: Sends instant notifications for large transfers
-- **WebSocket Connection**: Uses reliable WebSocket connection to Ethereum network
-- **Automatic Reconnection**: Handles connection drops with automatic retry logic
-- **Transfer History**: Maintains recent transfer history with statistics
-- **Docker Support**: Ready-to-deploy Docker configuration
-- **Environment Configuration**: Secure configuration management
+### 🔍 Blockchain Monitoring
+- **Gerçek zamanlı USDT izleme**: Ethereum mainnet'te ≥ 100,000 USDT transferlerini izler
+- **WebSocket bağlantısı**: Ethereum ağına güvenilir WebSocket bağlantısı
+- **Otomatik yeniden bağlanma**: Bağlantı kopmaları için otomatik retry mantığı
+- **Event filtering**: Sadece büyük transferleri filtreler ve işler
 
-## 🛠 Tech Stack
+### 📱 Bildirim Sistemi
+- **Firebase push notifications**: Büyük transferler için anında bildirimler
+- **Topic-based messaging**: `largeTransfers` topic'ine abone olan tüm cihazlara gönderim
+- **Rich notifications**: Transfer detaylarını içeren zengin bildirimler
+- **Multi-platform**: Android ve iOS destekli bildirimler
 
-- **Framework**: NestJS (Node.js)
-- **Blockchain**: Ethers.js for Ethereum interaction
-- **Notifications**: Firebase Admin SDK
-- **Configuration**: @nestjs/config with environment validation
-- **Containerization**: Docker & Docker Compose
+### 📊 Transfer Yönetimi
+- **Transfer geçmişi**: Son transferlerin hafızada tutulması
+- **İstatistikler**: Transfer istatistikleri ve analitik veriler
+- **Cleanup işlemleri**: Eski verilerin otomatik temizlenmesi
+- **Performance monitoring**: Sistem performans takibi
 
-## 📋 Prerequisites
+### 🔧 Operasyonel
+- **Docker desteği**: Production-ready Docker konfigürasyonu
+- **Environment configuration**: Güvenli konfigürasyon yönetimi
+- **Health checks**: Uygulama sağlık kontrolü
+- **Graceful shutdown**: Zarif kapatma mekanizması
 
-1. **Node.js 18+** installed
-2. **Ethereum RPC Provider** (Alchemy, Infura, etc.) with WebSocket support
-3. **Firebase Project** with Admin SDK credentials
-4. **npm** or **yarn** package manager
+## 🛠️ Teknoloji Stack'i
 
-## ⚙️ Installation & Setup
+### Core Framework
+- **NestJS 11.0.1**: Enterprise-grade Node.js framework
+- **Node.js 18+**: Modern JavaScript runtime
+- **TypeScript**: Type safety ve developer experience
+- **RxJS**: Reactive programming
 
-### 1. Clone and Install Dependencies
+### Blockchain Integration
+- **Ethers.js 6.15.0**: Ethereum blockchain etkileşimi
+- **WebSocket Provider**: Gerçek zamanlı event listening
+- **Contract Interaction**: USDT smart contract integration
+
+### Notification & Configuration
+- **Firebase Admin SDK 13.6.0**: Server-side Firebase operations
+- **@nestjs/config 4.0.2**: Configuration management
+- **Joi**: Environment validation
+
+### Development & Quality
+- **ESLint**: Code linting ve standards
+- **Prettier**: Code formatting
+- **Jest**: Unit ve integration testing
+
+## 📋 Kurulum
+
+### 1. Sistem Gereksinimleri
 
 ```bash
-# Navigate to backend directory
-cd backend
+# Node.js 18+ gereklidir
+node --version  # v18.0.0+
 
-# Install dependencies
+# npm veya yarn
+npm --version
+```
+
+### 2. Bağımlılıkları Yükleyin
+
+```bash
+cd backend
 npm install
 ```
 
-### 2. Environment Configuration
+### 3. Environment Configuration
 
-Create `.env` file in the backend directory:
-
+#### .env Dosyası Oluşturun
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your configuration:
+#### Environment Variables
+`.env` dosyasını düzenleyin:
 
-```env
-# Ethereum WebSocket URL (Required)
+```bash
+# Ethereum WebSocket URL (Zorunlu)
 ETHEREUM_WSS_URL=wss://eth-mainnet.ws.alchemyapi.io/v2/YOUR_API_KEY
 
-# Firebase Admin SDK Config Path (Required)
+# Firebase Admin SDK Config Path (Zorunlu)
 FIREBASE_ADMIN_CONFIG_PATH=./firebase-service-account.json
+
+# Uygulama Portu (Opsiyonel)
+PORT=3001
+
+# Log Level (Opsiyonel)
+LOG_LEVEL=info
 ```
-
-### 3. Firebase Setup
-
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create a new project or select existing one
-3. Navigate to **Project Settings** > **Service Accounts**
-4. Click **Generate new private key**
-5. Download the JSON file and save it as `firebase-service-account.json` in the backend directory
-6. **Important**: Add `firebase-service-account.json` to your `.gitignore`
 
 ### 4. Ethereum RPC Provider Setup
 
-Get a WebSocket endpoint from providers like:
+Aşağıdaki servis sağlayıcılardan birinden WebSocket endpoint alın:
 
-- **Alchemy**: `wss://eth-mainnet.ws.alchemyapi.io/v2/YOUR_API_KEY`
-- **Infura**: `wss://mainnet.infura.io/ws/v3/YOUR_PROJECT_ID`
-- **QuickNode**: Custom WebSocket endpoint
+#### Alchemy (Önerilen)
+```bash
+# 1. https://alchemy.com adresinde hesap oluşturun
+# 2. Yeni Ethereum Mainnet app oluşturun
+# 3. WebSocket URL'ini kopyalayın
+ETHEREUM_WSS_URL=wss://eth-mainnet.ws.alchemyapi.io/v2/YOUR_API_KEY
+```
 
-## 🚀 Running the Application
+#### Infura
+```bash
+# 1. https://infura.io adresinde proje oluşturun  
+# 2. Ethereum endpoint'i alın
+ETHEREUM_WSS_URL=wss://mainnet.infura.io/ws/v3/YOUR_PROJECT_ID
+```
+
+#### QuickNode
+```bash
+# 1. https://quicknode.com adresinde endpoint oluşturun
+ETHEREUM_WSS_URL=wss://your-endpoint.quiknode.pro/YOUR_TOKEN/
+```
+
+### 5. Firebase Setup
+
+#### Firebase Console Konfigürasyonu
+1. [Firebase Console](https://console.firebase.google.com/)'a gidin
+2. Yeni proje oluşturun veya mevcut projeyi seçin
+3. **Project Settings** > **Service Accounts** > **Firebase Admin SDK**
+4. **Generate new private key** butonuna tıklayın
+5. İndirilen JSON dosyasını `firebase-service-account.json` adıyla backend klasörüne kaydedin
+
+#### Cloud Messaging Setup
+```bash
+# Firebase Console'da Cloud Messaging'i etkinleştirin
+# Project Settings > Cloud Messaging > Enable API
+```
+
+### 6. Konfigürasyonu Doğrulayın
+
+```bash
+# Environment variables kontrolü
+npm run check:env
+
+# Configuration validation
+npm run validate:config
+```
+
+## 🚀 Uygulamayı Çalıştırma
 
 ### Development Mode
 
 ```bash
-# Start in development mode with auto-reload
+# Development server (hot reload)
 npm run start:dev
 
-# Start with debugging
+# Debug mode ile çalıştırma
 npm run start:debug
+
+# Monitor mode (alias for start:dev)
+npm run start:monitor
 ```
 
 ### Production Mode
 
 ```bash
-# Build the application
+# Build application
 npm run build
 
-# Start in production mode
+# Production server
 npm run start:prod
 ```
 
-### Using Docker
+### Docker ile Çalıştırma
 
 ```bash
-# Build and run with Docker Compose
+# Docker Compose ile build ve run
 docker-compose up -d
 
-# View logs
+# Logları görüntüle
 docker-compose logs -f usdt-monitor
 
-# Stop the service
+# Container durumunu kontrol et
+docker-compose ps
+
+# Servisi durdur
 docker-compose down
+```
+
+### Docker Compose Configuration
+```yaml
+services:
+  usdt-monitor:
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env
+    volumes:
+      - ./firebase-service-account.json:/app/firebase-service-account.json:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 ```
 
 ## 📊 Monitoring Configuration
 
-### USDT Contract Details
+### USDT Contract Detayları
 - **Contract Address**: `0xdAC17F958D2ee523a2206206994597C13D831ec7`
+- **Token Standard**: ERC-20
 - **Decimals**: 6
-- **Threshold**: 100,000 USDT (configurable in code)
-- **Network**: Ethereum Mainnet
+- **Transfer Threshold**: 100,000 USDT (configurable)
+- **Network**: Ethereum Mainnet (Chain ID: 1)
 
-### Transfer Event Structure
+### Event Monitoring
 ```typescript
-{
-  from: string;        // Sender address
-  to: string;          // Recipient address  
-  amount: string;      // Formatted USDT amount
-  txHash: string;      // Transaction hash
+interface TransferEvent {
+  from: string;           // Gönderen adres
+  to: string;            // Alıcı adres  
+  value: bigint;         // Raw transfer miktarı
+  formattedAmount: string; // Formatlanmış USDT miktarı
+  txHash: string;        // Transaction hash
+  blockNumber: number;   // Block numarası
+  timestamp: Date;       // Transfer zamanı
 }
+```
+
+### Filtering Logic
+```typescript
+// 100,000 USDT ve üzeri transferler
+const TRANSFER_THRESHOLD = ethers.parseUnits('100000', 6);
+
+// Contract event filter
+const filter = usdtContract.filters.Transfer();
 ```
 
 ## 🔧 Available Scripts
 
+### Development Scripts
 ```bash
-# Development
-npm run start:dev         # Start with hot reload
-npm run start:debug      # Start with debugger
-
-# Production  
-npm run build            # Build application
-npm run start:prod       # Start production server
-
-# Code Quality
-npm run lint             # Run ESLint
-npm run lint:fix         # Fix ESLint issues
-npm run format           # Format code with Prettier
-
-# Testing
-npm test                 # Run unit tests
-npm run test:watch       # Run tests in watch mode
-npm run test:cov         # Run tests with coverage
-
-# Utilities
-npm run check:env        # Verify environment variables
-npm run validate:config  # Validate configuration
+npm run start:dev         # Development server (watch mode)
+npm run start:debug       # Debug mode (port 9229)
+npm run start:monitor     # Alias for start:dev
 ```
 
-## 📱 Firebase Notification Format
+### Production Scripts
+```bash
+npm run build             # TypeScript build
+npm run start:prod        # Production server
+npm run start             # Standard NestJS start
+```
 
-Notifications are sent to the `largeTransfers` topic with this structure:
+### Code Quality Scripts
+```bash
+npm run lint              # ESLint check
+npm run lint:fix          # ESLint fix
+npm run format            # Prettier formatting
+```
+
+### Testing Scripts
+```bash
+npm run test              # Unit tests
+npm run test:watch        # Test watch mode
+npm run test:cov          # Coverage report
+npm run test:debug        # Debug tests
+npm run test:e2e          # E2E tests
+```
+
+### Utility Scripts
+```bash
+npm run check:env         # Environment variables check
+npm run validate:config   # Configuration validation
+```
+
+## 📱 Firebase Cloud Messaging
+
+### Notification Format
+Backend'den gönderilen bildirim formatı:
 
 ```json
 {
@@ -164,92 +287,368 @@ Notifications are sent to the `largeTransfers` topic with this structure:
     "body": "150,000.00 USDT transferred from 0x1234...5678 to 0xabcd...efgh"
   },
   "data": {
-    "from": "0x1234567890123456789012345678901234567890",
-    "to": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef", 
+    "fromAddress": "0x1234567890123456789012345678901234567890",
+    "toAddress": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcdef", 
     "amount": "150000.00",
     "txHash": "0x...",
-    "timestamp": "2024-01-15T10:30:00.000Z"
-  }
+    "timestamp": "2024-01-15T10:30:00.000Z",
+    "sound": "default",
+    "popupEnabled": "true"
+  },
+  "android": {
+    "notification": {
+      "sound": "default",
+      "channelId": "usdt_transfers",
+      "priority": "high"
+    }
+  },
+  "apns": {
+    "payload": {
+      "aps": {
+        "sound": "default",
+        "badge": 1
+      }
+    }
+  },
+  "topic": "largeTransfers"
 }
 ```
 
-## 🏗 Project Structure
+### Topic Subscription
+Frontend cihazlar `largeTransfers` topic'ine abone olur:
 
-```
-src/
-├── blockchain/
-│   ├── blockchain.module.ts          # Blockchain module
-│   ├── blockchain.service.ts         # Main monitoring service
-│   └── usdt-monitor.service.ts       # Transfer tracking service
-├── firebase/
-│   ├── firebase.module.ts            # Firebase module
-│   └── firebase.service.ts           # FCM notification service
-├── config/
-│   ├── configuration.ts              # App configuration
-│   └── config-validation.service.ts  # Config validation
-├── app.module.ts                     # Root application module
-└── main.ts                          # Application entry point
+```typescript
+// Frontend tarafında subscription
+await messaging.subscribeToTopic(fcmToken, 'largeTransfers');
 ```
 
-## 🔒 Security Considerations
+## 🏗️ Proje Yapısı
 
-1. **Environment Variables**: Never commit `.env` files or Firebase credentials
-2. **Network Security**: Use WSS (WebSocket Secure) connections
-3. **Rate Limiting**: Consider implementing rate limits for notifications
-4. **Error Handling**: Comprehensive error handling prevents crashes
-5. **Logging**: Secure logging without exposing sensitive data
+```
+backend/
+├── src/
+│   ├── main.ts                          # Application entry point
+│   ├── app.module.ts                    # Root module
+│   ├── blockchain/                      # Blockchain monitoring
+│   │   ├── blockchain.module.ts         # Blockchain module
+│   │   ├── blockchain.service.ts        # Main monitoring service
+│   │   └── usdt-monitor.service.ts      # Transfer processing service
+│   ├── firebase/                        # Firebase integration
+│   │   ├── firebase.module.ts           # Firebase module
+│   │   └── firebase.service.ts          # FCM notification service
+│   └── config/                          # Configuration
+│       ├── configuration.ts             # App configuration schema
+│       └── config-validation.service.ts # Environment validation
+├── test/                               # Test files
+│   ├── app.e2e-spec.ts                # E2E tests
+│   └── jest-e2e.json                  # E2E test config
+├── .env.example                        # Environment template
+├── .env                               # Environment variables (gitignored)
+├── firebase-service-account.json      # Firebase credentials (gitignored)
+├── Dockerfile                         # Docker configuration
+├── docker-compose.yml                 # Docker Compose setup
+├── nest-cli.json                      # NestJS CLI config
+├── tsconfig.json                      # TypeScript config
+├── tsconfig.build.json                # Build TypeScript config
+├── package.json                       # Dependencies
+└── README.md                          # This file
+```
 
-## 🐛 Troubleshooting
+### Core Modules
+
+#### BlockchainService
+```typescript
+@Injectable()
+export class BlockchainService implements OnApplicationBootstrap {
+  // WebSocket provider initialization
+  // USDT contract setup
+  // Event listener registration
+  // Connection management
+}
+```
+
+#### UsdtMonitorService
+```typescript
+@Injectable()
+export class UsdtMonitorService {
+  // Transfer processing logic
+  // History management
+  // Statistics calculation
+  // Data cleanup
+}
+```
+
+#### FirebaseService
+```typescript
+@Injectable()
+export class FirebaseService implements OnModuleInit {
+  // Firebase Admin SDK initialization
+  // FCM notification sending
+  // Topic management
+}
+```
+
+## 🔐 Güvenlik
+
+### Environment Security
+- **Sensitive data**: `.env` ve `firebase-service-account.json` gitignore'da
+- **File permissions**: Service account dosyası için 600 permission
+- **Environment validation**: Joi ile runtime validation
+
+### Network Security
+- **WSS connections**: Sadece güvenli WebSocket bağlantıları
+- **API keys**: Environment variables ile güvenli saklama
+- **Docker secrets**: Production'da Docker secrets kullanımı
+
+### Application Security
+- **Input validation**: Tüm girişler için validation
+- **Error handling**: Sensitive bilgilerin loglanmaması
+- **Rate limiting**: Notification rate limiting (gelecek özellik)
+
+## 🚀 Deployment
+
+### Vercel (Serverless)
+```bash
+# Vercel ile deploy (serverless functions)
+npm i -g vercel
+vercel
+
+# Environment variables Vercel dashboard'dan ekleyin
+```
+
+### Docker Production
+```bash
+# Production image build
+docker build -t usdt-monitor .
+
+# Container run
+docker run -d \
+  --name usdt-monitor \
+  --env-file .env \
+  -v $(pwd)/firebase-service-account.json:/app/firebase-service-account.json:ro \
+  -p 3001:3001 \
+  usdt-monitor
+```
+
+### PM2 (Process Manager)
+```bash
+# PM2 ile production deployment
+npm install -g pm2
+
+# Build application
+npm run build
+
+# Start with PM2
+pm2 start dist/main.js --name "usdt-monitor"
+
+# Save PM2 configuration
+pm2 save
+pm2 startup
+```
+
+### Environment Variables for Production
+Production ortamında gerekli environment variables:
+
+```bash
+ETHEREUM_WSS_URL=wss://...
+FIREBASE_ADMIN_CONFIG_PATH=/app/firebase-service-account.json
+NODE_ENV=production
+PORT=3001
+LOG_LEVEL=error
+```
+
+## 🐛 Debugging & Troubleshooting
 
 ### Common Issues
 
-**Connection Errors**
+#### 1. WebSocket Connection Errors
 ```bash
-# Check if your WebSocket URL is correct
+# URL syntax kontrolü
 npm run check:env
 
-# Verify network connectivity
+# Network connectivity test
 curl -I https://eth-mainnet.alchemyapi.io/v2/YOUR_API_KEY
-```
 
-**Firebase Authentication Errors**
-```bash
-# Verify Firebase credentials file exists
-ls -la firebase-service-account.json
-
-# Check file permissions
-chmod 600 firebase-service-account.json
-```
-
-**Build Issues**
-```bash
-# Clean install dependencies
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### Debug Logs
-
-Enable debug logging by setting `NODE_ENV=development`:
-
-```bash
+# Debug logs
 NODE_ENV=development npm run start:dev
 ```
 
-## 📈 Performance & Scaling
+**Error**: `WebSocket connection failed`
+**Solution**: 
+- API key'in geçerliliğini kontrol edin
+- Network firewall ayarlarını kontrol edin
+- Rate limit'e takılmış olabilirsiniz
 
-- **Memory Usage**: ~50-100MB baseline
-- **CPU Usage**: Low, event-driven architecture
+#### 2. Firebase Authentication Errors
+```bash
+# Firebase credentials kontrolü
+ls -la firebase-service-account.json
+
+# File permissions
+chmod 600 firebase-service-account.json
+
+# Content validation
+cat firebase-service-account.json | jq .
+```
+
+**Error**: `Firebase Admin SDK initialization failed`
+**Solution**:
+- Service account JSON'ın valid olduğunu kontrol edin
+- File path'in doğru olduğunu kontrol edin
+- Firebase projesinin aktif olduğunu kontrol edin
+
+#### 3. Memory/Performance Issues
+```bash
+# Memory usage monitoring
+docker stats usdt-monitor
+
+# Application health check
+curl http://localhost:3001/health
+
+# Process monitoring
+ps aux | grep node
+```
+
+### Debug Configuration
+
+#### Development Debugging
+```typescript
+// Environment-based logging
+if (process.env.NODE_ENV === 'development') {
+  this.logger.debug('Detailed debug information');
+}
+```
+
+#### Docker Debugging
+```bash
+# Container logs
+docker-compose logs -f usdt-monitor
+
+# Container shell access
+docker exec -it usdt-monitor sh
+
+# Resource usage
+docker stats usdt-monitor
+```
+
+### Log Analysis
+```bash
+# Real-time logs
+tail -f logs/application.log
+
+# Error filtering  
+grep ERROR logs/application.log
+
+# Performance monitoring
+grep "Transfer processed" logs/application.log | wc -l
+```
+
+## 📊 Performance & Monitoring
+
+### System Requirements
+- **Memory**: 100-200MB baseline
+- **CPU**: Low usage (event-driven)
 - **Network**: Persistent WebSocket connection
-- **Scaling**: Stateless design allows horizontal scaling
+- **Storage**: Minimal (in-memory data)
+
+### Performance Metrics
+```typescript
+// Transfer processing metrics
+export interface PerformanceMetrics {
+  totalTransfers: number;
+  averageProcessingTime: number;
+  notificationsSent: number;
+  uptime: number;
+}
+```
+
+### Scaling Considerations
+- **Horizontal scaling**: Stateless design
+- **Load balancing**: Multiple instances
+- **Database**: Redis için persistent storage
+- **Message queue**: Bull/Agenda için job processing
+
+### Health Monitoring
+```typescript
+// Health check endpoint
+@Get('/health')
+healthCheck() {
+  return {
+    status: 'ok',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    connections: this.getActiveConnections()
+  };
+}
+```
+
+## 🧪 Testing
+
+### Unit Tests
+```bash
+# All unit tests
+npm run test
+
+# Specific test file
+npm run test -- blockchain.service.spec.ts
+
+# Watch mode
+npm run test:watch
+```
+
+### E2E Tests
+```bash
+# End-to-end tests
+npm run test:e2e
+
+# Coverage report
+npm run test:cov
+```
+
+### Test Structure
+```typescript
+describe('BlockchainService', () => {
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [BlockchainService, MockFirebaseService],
+    }).compile();
+  });
+
+  it('should detect large transfers', async () => {
+    // Test implementation
+  });
+});
+```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/new-feature`
-3. Commit changes: `git commit -am 'Add new feature'`
-4. Push to branch: `git push origin feature/new-feature`  
-5. Submit a Pull Request
+### Development Workflow
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Implement changes with tests
+4. Run linting: `npm run lint:fix`
+5. Run tests: `npm test`
+6. Commit: `git commit -am 'Add new feature'`
+7. Push: `git push origin feature/new-feature`
+8. Create Pull Request
+
+### Code Standards
+- **ESLint**: Automated code linting
+- **Prettier**: Code formatting
+- **TypeScript**: Strict type checking
+- **Testing**: Unit tests required for new features
+
+### Commit Convention
+```bash
+# Feature
+git commit -m "feat: add transfer threshold configuration"
+
+# Bug fix
+git commit -m "fix: resolve websocket reconnection issue"
+
+# Documentation
+git commit -m "docs: update installation instructions"
+```
 
 ## 📄 License
 
@@ -257,90 +656,19 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🆘 Support
 
-For support and questions:
+Destek ve sorularınız için:
 
-- Create an issue in the GitHub repository
-- Check existing documentation
-- Review logs for error details
+- **GitHub Issues**: Bug reports ve feature requests
+- **Documentation**: README ve code comments
+- **Logs**: Application logs için troubleshooting
+
+## 🔗 İlgili Linkler
+
+- **NestJS Documentation**: https://docs.nestjs.com
+- **Ethers.js Documentation**: https://docs.ethers.io
+- **Firebase Admin SDK**: https://firebase.google.com/docs/admin/setup
+- **Ethereum JSON-RPC**: https://ethereum.org/en/developers/docs/apis/json-rpc/
 
 ---
 
-**⚠️ Disclaimer**: This software is for educational and monitoring purposes only. Ensure compliance with relevant regulations and terms of service when monitoring blockchain data.
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**⚠️ Disclaimer**: Bu yazılım eğitim ve monitoring amaçlıdır. Blockchain verilerini izlerken ilgili yönetmelikler ve hizmet koşullarına uygunluğu sağlayın.

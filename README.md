@@ -390,101 +390,32 @@ NEXT_PUBLIC_FIREBASE_VAPID_KEY=your_vapid_key
 
 ## 🎯 Kapsamlı Özellik Listesi
 
-### 🔍 **Blockchain Monitoring Features**
-
-#### Real-time Transfer Detection
-- ✅ **WebSocket Connection**: Ethereum mainnet ile sürekli bağlantı
-- ✅ **USDT Contract Monitoring**: `0xdAC17F958D2ee523a2206206994597C13D831ec7` adresi izleme
-- ✅ **Threshold Filtering**: 100,000+ USDT transferleri için akıllı filtreleme
-- ✅ **Event Processing**: Transfer event'lerini real-time işleme
-- ✅ **Automatic Reconnection**: Bağlantı kopması durumunda otomatik yeniden bağlanma
-
-#### Data Management
-- ✅ **Transfer History**: Son transferlerin in-memory storage'da tutulması
-- ✅ **Statistics Calculation**: Volume, frequency ve trend analizi
-- ✅ **Data Cleanup**: Eski verilerin otomatik temizlenmesi
+### 🔍 **Blockchain Monitoring**
+- ✅ **Real-time WebSocket**: Ethereum mainnet ile sürekli bağlantı
+- ✅ **USDT Contract**: 100,000+ transfer threshold ile akıllı filtreleme
+- ✅ **Auto Reconnection**: Bağlantı kopması durumunda otomatik recovery
 - ✅ **Performance Monitoring**: System metrics ve health checks
 
-### 📱 **Notification System Features**
-
-#### Firebase Cloud Messaging
-- ✅ **Topic-based Messaging**: `largeTransfers` topic ile targeted notifications
-- ✅ **Cross-platform Support**: Web, Android, iOS uyumluluğu
+### 📱 **Notification System** 
+- ✅ **Firebase FCM**: Cross-platform push notifications
 - ✅ **Rich Notifications**: Transfer detayları ile zengin bildirimler
-- ✅ **Background Processing**: Service Worker ile background notifications
+- ✅ **Background/Foreground**: Service Worker ile 7/24 bildirim
+- ✅ **Custom Sounds**: Web Audio API ile özelleştirilebilir sesler
 
-#### Advanced Notification Features
-- ✅ **Foreground Notifications**: Uygulama açıkken real-time updates
-- ✅ **Background Notifications**: Uygulama kapalıyken browser notifications
-- ✅ **Sound Integration**: Web Audio API ile custom notification sounds
-- ✅ **Notification Persistence**: LocalStorage ile bildirim geçmişi
-
-### 🎨 **Frontend UI/UX Features**
-
-#### Modern Interface Design
+### 🎨 **Modern UI/UX**
 - ✅ **Next.js 16 + React 19**: Latest framework features
-- ✅ **Tailwind CSS 4**: Utility-first responsive design
-- ✅ **Framer Motion**: High-performance animations
-- ✅ **Dark Theme**: Professional dark mode interface
-- ✅ **Gradient Backgrounds**: Animated visual effects
+- ✅ **Tailwind CSS 4**: Responsive ve modern tasarım
+- ✅ **Framer Motion**: High-performance animasyonlar
+- ✅ **Dark Theme**: Professional interface
 
-#### Interactive Components
-- ✅ **Control Panel**: Notification settings management
-- ✅ **Dashboard Metrics**: Real-time statistics display
-- ✅ **Transfer Cards**: Rich transfer information display
-- ✅ **Status Indicators**: Visual connection status
-- ✅ **Responsive Grid**: Mobile-optimized layout
-
-#### User Experience
-- ✅ **One-click Setup**: Simple notification permission flow
-- ✅ **Settings Persistence**: LocalStorage için user preferences
-- ✅ **Error Boundaries**: Graceful error handling
-- ✅ **Loading States**: Smooth loading animations
-- ✅ **Accessibility**: Screen reader ve keyboard navigation
-
-### 🚀 **Backend Architecture Features**
-
-#### NestJS Framework
-- ✅ **Modular Architecture**: Service-based clean architecture
-- ✅ **Dependency Injection**: IoC container ile loose coupling
-- ✅ **TypeScript Support**: Full type safety
-- ✅ **Configuration Management**: Environment-based config
-- ✅ **Graceful Shutdown**: Clean application termination
-
-#### Enterprise Features
-- ✅ **Error Handling**: Comprehensive exception handling
-- ✅ **Logging System**: Structured logging ile debugging
-- ✅ **Health Checks**: Application health monitoring
+### 🚀 **Enterprise Backend**
+- ✅ **NestJS Framework**: Scalable modular architecture
+- ✅ **TypeScript**: Full type safety ve developer experience
 - ✅ **Docker Support**: Container-ready deployment
-- ✅ **Environment Validation**: Joi ile config validation
+- ✅ **Comprehensive Logging**: Structured error handling
 
-### 🔧 **DevOps & Deployment Features**
-
-#### Development Tools
-- ✅ **Hot Reload**: Development mode ile instant updates
-- ✅ **Debug Support**: VS Code debug configuration
-- ✅ **ESLint + Prettier**: Code quality enforcement
-- ✅ **TypeScript**: Compile-time error checking
-
-#### Production Ready
-- ✅ **Docker Containerization**: Multi-stage builds
-- ✅ **Environment Separation**: Dev/staging/production configs
-- ✅ **Performance Optimization**: Bundle optimization
-- ✅ **Security Headers**: Security best practices
-
-### 🔐 **Security Features**
-
-#### Data Protection
-- ✅ **Environment Variables**: Sensitive data protection
-- ✅ **Firebase Admin SDK**: Server-side secure operations
-- ✅ **VAPID Keys**: Secure web push messaging
-- ✅ **HTTPS Enforcement**: Production security requirements
-
-#### Best Practices
-- ✅ **Input Validation**: Comprehensive data validation
-- ✅ **Error Sanitization**: Secure error messages
-- ✅ **File Permissions**: Proper credential file security
-- ✅ **Gitignore Protection**: Credential file exclusion
+🔍 **Detaylı özellik listesi, technical specifications, roadmap için:**  
+👉 **[🎯 Kapsamlı Özellik Dokümantasyonu](./docs/FEATURES.md)**
 
 ## � API Documentation
 

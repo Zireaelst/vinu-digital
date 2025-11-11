@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import { SettingsProvider } from '@/contexts/SettingsContext';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export default function RootLayout({
   children,
@@ -28,13 +29,43 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <script src="/notification-sound.js" defer />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Global error handler to suppress MetaMask extension conflicts
+              window.addEventListener('error', function(e) {
+                if (e.message && (
+                  e.message.includes('ethereum') || 
+                  e.message.includes('MetaMask') || 
+                  e.message.includes('Cannot set property ethereum') ||
+                  e.filename?.includes('extension')
+                )) {
+                  e.preventDefault();
+                  return false;
+                }
+              });
+              
+              window.addEventListener('unhandledrejection', function(e) {
+                if (e.reason && e.reason.message && (
+                  e.reason.message.includes('ethereum') || 
+                  e.reason.message.includes('MetaMask')
+                )) {
+                  e.preventDefault();
+                  return false;
+                }
+              });
+            `
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SettingsProvider>
-          {children}
-        </SettingsProvider>
+        <ErrorBoundary>
+          <SettingsProvider>
+            {children}
+          </SettingsProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );

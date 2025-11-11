@@ -18,8 +18,14 @@ let messaging: Messaging | null = null;
 if (typeof window !== 'undefined') {
   isSupported().then((supported) => {
     if (supported) {
-      messaging = getMessaging(app);
+      try {
+        messaging = getMessaging(app);
+      } catch (error) {
+        console.error('Firebase messaging initialization error:', error);
+      }
     }
+  }).catch((error) => {
+    console.error('Firebase messaging support check error:', error);
   });
 }
 
@@ -82,13 +88,22 @@ export const playNotificationSound = () => {
 export const onMessageListener = (callback: (payload: object) => void) => {
   if (!messaging) return;
   
-  return onMessage(messaging, (payload) => {
-    console.log('Foreground mesaj alındı:', payload);
-    
-    // Settings are handled in the component level now
-    // to ensure React context is available
-    callback(payload);
-  });
+  try {
+    return onMessage(messaging, (payload) => {
+      // Foreground message received and processing
+      
+      // Settings are handled in the component level now
+      // to ensure React context is available
+      try {
+        callback(payload);
+      } catch (error) {
+        console.error('Message callback error:', error);
+      }
+    });
+  } catch (error) {
+    console.error('onMessage listener setup error:', error);
+    return undefined;
+  }
 };
 
 

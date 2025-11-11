@@ -1,6 +1,10 @@
 // Firebase messaging service worker
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
-importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+try {
+  importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
+  importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
+} catch (error) {
+  console.error('[firebase-messaging-sw.js] Error loading Firebase scripts:', error);
+}
 
 // Firebase config
 const firebaseConfig = {
@@ -20,7 +24,10 @@ const messaging = firebase.messaging();
 
 // Arka plan mesajlarını handle et
 messaging.onBackgroundMessage((payload) => {
-  console.log('[firebase-messaging-sw.js] Background message received:', payload);
+  // Only log when debugging - reduce console noise
+  if (self.location.hostname === 'localhost') {
+    console.log('[firebase-messaging-sw.js] Background message received:', payload);
+  }
 
   // Main app'e bildirim gönder (Recent Transfers güncellemesi için)
   self.clients.matchAll({ type: 'window' }).then(clients => {

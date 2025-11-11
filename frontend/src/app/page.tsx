@@ -37,31 +37,9 @@ interface MessagePayload {
 const USDT_CONTRACT_ADDRESS = '0xdAC17F958D2ee523a2206206994597C13D831ec7';
 
 export default function Home() {
-  const [notifications, setNotifications] = useState<NotificationData[]>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('recentTransfers');
-        const parsedData = saved ? JSON.parse(saved) : [];
-        
-
-        
-        // Geçerli veri formatını kontrol et
-        const validData = parsedData.filter((item: NotificationData) => 
-          item.id && 
-          item.timestamp && 
-          typeof item.timestamp === 'number'
-        );
-        
-        return validData;
-      } catch {
-        console.log('🚨 Error reading localStorage, starting fresh');
-        localStorage.removeItem('recentTransfers');
-        return [];
-      }
-    }
-    return [];
-  });
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [permission, setPermission] = useState<NotificationPermission>('default');
+  const [isClient, setIsClient] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [fcmToken, setFcmToken] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -72,6 +50,36 @@ export default function Home() {
   const [controlPanelOpen, setControlPanelOpen] = useState(false);
 
   const { soundEnabled, popupNotificationsEnabled } = useSettings();
+
+  // Load localStorage data and permission state after hydration
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsClient(true);
+      
+      // Load notification permission
+      if ('Notification' in window) {
+        setPermission(Notification.permission);
+      }
+      
+      // Load localStorage data
+      try {
+        const saved = localStorage.getItem('recentTransfers');
+        const parsedData = saved ? JSON.parse(saved) : [];
+        
+        // Geçerli veri formatını kontrol et
+        const validData = parsedData.filter((item: NotificationData) => 
+          item.id && 
+          item.timestamp && 
+          typeof item.timestamp === 'number'
+        );
+        
+        setNotifications(validData);
+      } catch {
+        // Clear corrupted localStorage silently
+        localStorage.removeItem('recentTransfers');
+      }
+    }
+  }, []);
 
   const addNotification = useCallback((payload: MessagePayload) => {
     // Unique ID oluştur - Firebase messageId varsa onu kullan, yoksa timestamp + random
@@ -152,8 +160,8 @@ export default function Home() {
         throw new Error('Konuya abone olma başarısız');
       }
 
-      const result = await response.json();
-      console.log('Konuya abone olma başarılı:', result);
+      await response.json();
+      // Successfully subscribed to topic
     } catch (error) {
       console.error('Konuya abone olma hatası:', error);
     }
@@ -210,14 +218,14 @@ export default function Home() {
       const token = await getFCMToken();
       if (token) {
         setFcmToken(token);
-        console.log('FCM Token:', token);
+        // FCM Token obtained successfully
 
         // Token'ı sunucuya gönder (konuya abone et)
         await subscribeToTopic(token);
 
         // Foreground mesaj dinleyicisini kur
         onMessageListener((payload) => {
-          console.log('Yeni bildirim alındı:', payload);
+          // New notification received and processed
           addNotification(payload as MessagePayload);
         });
       }
@@ -406,20 +414,24 @@ export default function Home() {
               <div>
                 <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Status</p>
                 <p className="text-xl font-semibold text-zinc-900 dark:text-white">
-                  {permission === 'granted' ? 'Active' : 'Inactive'}
+                  {!isClient ? 'Loading...' : (permission === 'granted' ? 'Active' : 'Inactive')}
                 </p>
               </div>
               <div className={cn(
                 "w-12 h-12 rounded-lg flex items-center justify-center",
-                permission === 'granted' 
-                  ? "bg-green-50 dark:bg-green-900/20" 
-                  : "bg-red-50 dark:bg-red-900/20"
+                !isClient 
+                  ? "bg-gray-50 dark:bg-gray-900/20" 
+                  : permission === 'granted' 
+                    ? "bg-green-50 dark:bg-green-900/20" 
+                    : "bg-red-50 dark:bg-red-900/20"
               )}>
                 <Activity className={cn(
                   "w-6 h-6",
-                  permission === 'granted' 
-                    ? "text-green-600 dark:text-green-400" 
-                    : "text-red-600 dark:text-red-400"
+                  !isClient 
+                    ? "text-gray-600 dark:text-gray-400" 
+                    : permission === 'granted' 
+                      ? "text-green-600 dark:text-green-400" 
+                      : "text-red-600 dark:text-red-400"
                 )} />
               </div>
             </div>
@@ -430,7 +442,7 @@ export default function Home() {
               <div>
                 <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Recent Activity</p>
                 <p className="text-xl font-semibold text-zinc-900 dark:text-white">
-                  {notifications.length > 0 ? 'Active' : 'Waiting'}
+                  {!isClient ? 'Loading...' : (notifications.length > 0 ? 'Active' : 'Waiting')}
                 </p>
               </div>
               <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-lg flex items-center justify-center">

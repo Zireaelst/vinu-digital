@@ -91,6 +91,7 @@ export class BlockchainService implements OnApplicationBootstrap {
     );
 
     // Listen for Transfer events with proper ethers.js v6 syntax
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.usdtContract.on(
       'Transfer',
       (
@@ -107,6 +108,7 @@ export class BlockchainService implements OnApplicationBootstrap {
 
     // Handle connection errors
     if (this.provider) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.provider.on('error', (error) => {
         this.logger.error('WebSocket connection error:', error);
         void this.handleConnectionError().catch((err) => {
@@ -135,7 +137,7 @@ export class BlockchainService implements OnApplicationBootstrap {
       }
 
       const formattedAmount = ethers.formatUnits(value, this.USDT_DECIMALS);
-      
+
       // Extract transaction hash from ContractEventPayload
       // In ethers.js v6, transaction hash is in event.log.transactionHash
       const txHash: string = event.log.transactionHash;

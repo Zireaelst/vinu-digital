@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Volume2, VolumeX, Bell, BellOff, Monitor, MonitorX, X } from 'lucide-react';
+import { Settings, Volume2, VolumeX, Monitor, MonitorX, X } from 'lucide-react';
 import { useSettings } from '@/contexts/SettingsContext';
 import { playNotificationSound } from '@/lib/firebase/client';
 
@@ -14,10 +14,8 @@ interface ControlPanelProps {
 export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) => {
   const {
     soundEnabled,
-    notificationsEnabled,
     popupNotificationsEnabled,
     setSoundEnabled,
-    setNotificationsEnabled,
     setPopupNotificationsEnabled,
   } = useSettings();
 
@@ -33,37 +31,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) =
     }
   };
 
-  const handleNotificationToggle = async () => {
-    const newState = !notificationsEnabled;
-    
-    if (newState) {
-      // İzin kontrolü
-      if (Notification.permission === 'default') {
-        try {
-          const permission = await Notification.requestPermission();
-          console.log('Notification permission result:', permission);
-          
-          if (permission === 'granted') {
-            setNotificationsEnabled(true);
-          } else {
-            console.log('Notification permission denied');
-            return;
-          }
-        } catch (error) {
-          console.error('Notification permission error:', error);
-          return;
-        }
-      } else if (Notification.permission === 'denied') {
-        console.log('Notification permission was previously denied');
-        alert('Bildirim izni reddedilmiş. Tarayıcı ayarlarından manuel olarak açmanız gerekiyor.');
-        return;
-      } else {
-        setNotificationsEnabled(true);
-      }
-    } else {
-      setNotificationsEnabled(false);
-    }
-  };
+
 
   const handlePopupToggle = () => {
     setPopupNotificationsEnabled(!popupNotificationsEnabled);
@@ -99,10 +67,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) =
                 </div>
                 <div>
                   <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
-                    Kontrol Paneli
+                    Control Panel
                   </h2>
                   <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                    Bildirim ayarları
+                    Notification settings
                   </p>
                 </div>
               </div>
@@ -127,10 +95,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) =
                     )}
                     <div>
                       <h3 className="font-medium text-zinc-900 dark:text-white">
-                        Bildirim Sesleri
+                        Notification Sounds
                       </h3>
                       <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                        Transfer bildirimleri için ses
+                        Sound for transfer notifications
                       </p>
                     </div>
                   </div>
@@ -152,45 +120,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) =
 
               </div>
 
-              {/* Firebase Notifications */}
-              <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    {notificationsEnabled ? (
-                      <Bell className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    ) : (
-                      <BellOff className="w-5 h-5 text-red-600 dark:text-red-400" />
-                    )}
-                    <div>
-                      <h3 className="font-medium text-zinc-900 dark:text-white">
-                        Firebase Bildirimleri
-                      </h3>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                        Gerçek zamanlı bildirimler
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleNotificationToggle}
-                    className={`relative w-12 h-6 rounded-full transition-colors duration-200 ${
-                      notificationsEnabled
-                        ? 'bg-blue-500'
-                        : 'bg-zinc-300 dark:bg-zinc-600'
-                    }`}
-                  >
-                    <div
-                      className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${
-                        notificationsEnabled ? 'translate-x-6' : 'translate-x-0.5'
-                      }`}
-                    />
-                  </button>
-                </div>
-                {notificationsEnabled && Notification.permission !== 'granted' && (
-                  <div className="text-xs text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 p-2 rounded-lg">
-                    ⚠️ Tarayıcı izni gerekli
-                  </div>
-                )}
-              </div>
+              {/* Firebase Notifications - Removed from UI, works automatically in background */}
 
               {/* Popup Notifications */}
               <div className="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
@@ -203,10 +133,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) =
                     )}
                     <div>
                       <h3 className="font-medium text-zinc-900 dark:text-white">
-                        Popup Bildirimleri
+                        Popup Notifications
                       </h3>
                       <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                        Masaüstü bildirim popup&apos;ları
+                        Desktop notification popups
                       </p>
                     </div>
                   </div>
@@ -232,7 +162,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ isOpen, onClose }) =
             {/* Footer */}
             <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
               <p className="text-xs text-zinc-500 dark:text-zinc-400 text-center">
-                Ayarlar otomatik olarak kaydedilir
+                Settings are automatically saved
               </p>
             </div>
           </motion.div>

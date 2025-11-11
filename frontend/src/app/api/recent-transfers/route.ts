@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const since = searchParams.get('since');
     
-    // Backend'den gerçek transfer verilerini al
+    // Get real transfer data from backend
     const backendUrl = process.env.BACKEND_URL || 'http://localhost:3001';
     const response = await fetch(`${backendUrl}/transfers/recent${since ? `?since=${since}` : ''}`, {
       method: 'GET',

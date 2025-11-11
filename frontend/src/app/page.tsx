@@ -66,7 +66,7 @@ export default function Home() {
         const saved = localStorage.getItem('recentTransfers');
         const parsedData = saved ? JSON.parse(saved) : [];
         
-        // Geçerli veri formatını kontrol et
+        // Check for valid data format
         const validData = parsedData.filter((item: NotificationData) => 
           item.id && 
           item.timestamp && 
@@ -82,7 +82,7 @@ export default function Home() {
   }, []);
 
   const addNotification = useCallback((payload: MessagePayload) => {
-    // Unique ID oluştur - Firebase messageId varsa onu kullan, yoksa timestamp + random
+    // Create unique ID - use Firebase messageId if available, otherwise timestamp + random
     const uniqueId = payload.messageId || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     const newNotification: NotificationData = {
@@ -97,7 +97,7 @@ export default function Home() {
     };
 
     setNotifications(prev => {
-      const updated = [newNotification, ...prev].slice(0, 50); // Max 50 notification tut
+      const updated = [newNotification, ...prev].slice(0, 50); // Keep max 50 notifications
       // LocalStorage'a kaydet
       try {
         localStorage.setItem('recentTransfers', JSON.stringify(updated));
@@ -250,21 +250,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // Mevcut bildirim iznini kontrol et
+    // Check current notification permission
     if ('Notification' in window) {
       setPermission(Notification.permission);
     }
 
-    // Eğer izin zaten verilmişse, token'ı al ve dinleyiciyi kur
+    // If permission is already granted, get token and set up listener
     if (Notification.permission === 'granted') {
       initializeFCM();
     }
 
-    // Toplam bildirim sayısını çek
+    // Fetch total notification count
     fetchNotificationCount();
   }, [initializeFCM, fetchNotificationCount]);
 
-  // Service Worker mesajlarını dinle (Background notifications için)
+  // Listen for Service Worker messages (for background notifications)
   useEffect(() => {
     const handleServiceWorkerMessage = (event: MessageEvent) => {
       if (event.data && event.data.type === 'FIREBASE_BACKGROUND_MESSAGE') {
@@ -304,7 +304,7 @@ export default function Home() {
         await initializeFCM();
       }
     } catch (error) {
-      console.error('Bildirim izni hatası:', error);
+      console.error('Notification permission error:', error);
     } finally {
       setIsLoading(false);
     }

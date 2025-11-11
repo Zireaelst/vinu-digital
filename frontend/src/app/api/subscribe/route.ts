@@ -16,14 +16,14 @@ export async function POST(req: NextRequest) {
     // Admin messaging servisini al
     const messaging = getAdminMessaging();
 
-    // Token'ı largeTransfers konusuna abone et
+    // Subscribe token to largeTransfers topic
     const result = await messaging.subscribeToTopic(token, 'largeTransfers');
 
-    console.log('Cihaz largeTransfers konusuna abone edildi:', result);
+    console.log('Device subscribed to largeTransfers topic:', result);
 
     return NextResponse.json({
       success: true,
-      message: 'Cihaz başarıyla largeTransfers konusuna abone edildi',
+      message: 'Device successfully subscribed to largeTransfers topic',
       result
     });
 

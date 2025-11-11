@@ -4,10 +4,8 @@ import React, { createContext, useContext, useState } from 'react';
 
 interface SettingsContextType {
   soundEnabled: boolean;
-  notificationsEnabled: boolean;
   popupNotificationsEnabled: boolean;
   setSoundEnabled: (enabled: boolean) => void;
-  setNotificationsEnabled: (enabled: boolean) => void;
   setPopupNotificationsEnabled: (enabled: boolean) => void;
 }
 
@@ -35,13 +33,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     return true;
   });
 
-  const [notificationsEnabled, setNotificationsEnabled] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('notificationsEnabled');
-      return saved !== null ? JSON.parse(saved) : true;
-    }
-    return true;
-  });
+
 
   const [popupNotificationsEnabled, setPopupNotificationsEnabled] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -57,10 +49,7 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     localStorage.setItem('soundEnabled', JSON.stringify(enabled));
   };
 
-  const handleSetNotificationsEnabled = (enabled: boolean) => {
-    setNotificationsEnabled(enabled);
-    localStorage.setItem('notificationsEnabled', JSON.stringify(enabled));
-  };
+
 
   const handleSetPopupNotificationsEnabled = (enabled: boolean) => {
     setPopupNotificationsEnabled(enabled);
@@ -71,10 +60,8 @@ export const SettingsProvider: React.FC<SettingsProviderProps> = ({ children }) 
     <SettingsContext.Provider
       value={{
         soundEnabled,
-        notificationsEnabled,
         popupNotificationsEnabled,
         setSoundEnabled: handleSetSoundEnabled,
-        setNotificationsEnabled: handleSetNotificationsEnabled,
         setPopupNotificationsEnabled: handleSetPopupNotificationsEnabled,
       }}
     >

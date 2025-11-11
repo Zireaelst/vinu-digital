@@ -29,7 +29,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// FCM token alma fonksiyonu
+// FCM token getting function
 export const getFCMToken = async (): Promise<string | null> => {
   if (!messaging) return null;
   
@@ -39,12 +39,12 @@ export const getFCMToken = async (): Promise<string | null> => {
     });
     return token;
   } catch (error) {
-    console.error('FCM token alınamadı:', error);
+    console.error('FCM token could not be retrieved:', error);
     return null;
   }
 };
 
-// Bildirim sesi çalma fonksiyonu
+// Notification sound playing function
 export const playNotificationSound = () => {
   try {
     // First try Web Audio API generated sound
@@ -74,7 +74,7 @@ export const playNotificationSound = () => {
     oscillator.start(audioContext.currentTime);
     oscillator.stop(audioContext.currentTime + 0.2);
   } catch (error) {
-    console.error('Ses çalma hatası:', error);
+    console.error('Sound playing error:', error);
     // Ultimate fallback - system beep
     try {
       console.log('\x07'); // ASCII bell character

@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BlockchainModule } from './blockchain/blockchain.module';
 import { FirebaseModule } from './firebase/firebase.module';
+
 import configuration from './config/configuration';
 import { ConfigValidationService } from './config/config-validation.service';
 

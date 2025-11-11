@@ -38,14 +38,59 @@ export const getFCMToken = async (): Promise<string | null> => {
   }
 };
 
+// Bildirim sesi çalma fonksiyonu
+export const playNotificationSound = () => {
+  try {
+    // First try Web Audio API generated sound
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof window !== 'undefined' && (window as any).generateNotificationSound) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      if ((window as any).generateNotificationSound()) {
+        return;
+      }
+    }
+    
+    // Fallback to simple beep
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.2);
+  } catch (error) {
+    console.error('Ses çalma hatası:', error);
+    // Ultimate fallback - system beep
+    try {
+      console.log('\x07'); // ASCII bell character
+    } catch {
+      console.log('🔊 Notification!');
+    }
+  }
+};
+
 // Foreground mesaj dinleyici
 export const onMessageListener = (callback: (payload: object) => void) => {
   if (!messaging) return;
   
   return onMessage(messaging, (payload) => {
     console.log('Foreground mesaj alındı:', payload);
+    
+    // Settings are handled in the component level now
+    // to ensure React context is available
     callback(payload);
   });
 };
+
+
 
 export { messaging };
